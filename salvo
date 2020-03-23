@@ -1,0 +1,276 @@
+/*
+* Cadastro de pessoas em C++
+* Arquivo     : "mainCadastro_pessoa.cpp"
+* Versão 0.5  : Teste
+* Programador : Felipe Vieira Mota
+* Curso		  : Bacharelado em Sistemas de Informação, Faculdade Fortec, 3° para o 4° Semestre.
+* Local 	  : São Vicente , São Paulo , Brasil.
+* Data        : 25/07/2015, Sábado
+* Horário	  : 23:54, noite.
+*/
+#include "Cadastro_Pessoa.h"
+# include <windows.h>
+# include  <stdlib.h>
+# define  BUTTONOK 10
+
+HINSTANCE g_inst;
+HWND Senha, Login,BOTAO_LOGAR;
+
+void DrawComponents(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) 
+	{
+//*************************************************************************************************************		
+	//1)Login 	
+	//************************************************************************		
+			CreateWindowEx 
+				(
+						              										0,
+					     	   										 "STATIC",
+							    									  "Login",
+								WS_MINIMIZEBOX|WS_VISIBLE|WS_CHILD|WS_TABSTOP,
+			         										   20, 20, 60, 20,
+							   											 hwnd,
+                               											 NULL,
+                             										   g_inst,
+                               								   			 NULL
+				);
+	
+			Login = CreateWindowEx 
+				(
+				             								WS_EX_CLIENTEDGE,
+				          			   								  "EDIT",
+                              			  								 " ",
+                          								 WS_VISIBLE|WS_CHILD,			  
+							   								 20, 42, 550, 20,
+										 								hwnd,
+										 								NULL,
+									   								  g_inst,
+										 								NULL
+				);
+	//************************************************************************
+//*************************************************************************************************************	
+
+//PROXIMO CAMPO ABAIXO -> IDADE
+	
+//*************************************************************************************************************		
+	//2) Senha
+	//************************************************************************		
+			CreateWindowEx 
+				(
+						              										0,
+					     	   										 "STATIC",
+							    									  "Senha",
+								WS_MINIMIZEBOX|WS_VISIBLE|WS_CHILD|WS_TABSTOP,
+			         										   20, 70, 60, 20,
+							   											 hwnd,
+                               											 NULL,
+                             										   g_inst,
+                               								   			 NULL
+				);
+
+			Senha= CreateWindowEx 
+				(
+				             								WS_EX_CLIENTEDGE,
+				          			   								  "EDIT",
+                              			  								 " ",
+                          								 WS_VISIBLE|WS_CHILD,			  
+                							 //WS_VISIBLE|WS_CHILD|WS_BORDER,
+							   								 20, 92, 550, 20,
+										 								hwnd,
+										 								NULL,
+									   								  g_inst,
+										 								NULL
+				);
+	//************************************************************************
+//*************************************************************************************************************	
+
+
+//***************************************************
+		BOTAO_LOGAR = CreateWindowEx 
+			(
+				                  0,
+				           "BUTTON",
+				           "LOGAR",
+				WS_VISIBLE|WS_CHILD,
+				    50, 120, 250, 100,
+				               hwnd,
+				    (HMENU)BUTTONOK,
+						     g_inst,
+						       NULL
+			);
+//***************************************************
+
+
+//***************************************************
+		BOTAO_LOGAR = CreateWindowEx 
+			(
+				                  0,
+				           "BUTTON",
+				           "SAIR",
+				WS_VISIBLE|WS_CHILD,
+				    310, 120, 250, 100,
+				               hwnd,
+				    (HMENU)BUTTONOK,
+						     g_inst,
+						       NULL
+			);
+//***************************************************
+
+
+
+
+}
+
+//-------------------------------------------------------------------------------------------------
+//*************************************************************************************************
+//-------------------------------------------------------------------------------------------------
+
+
+//variaveis
+
+char Login_confirm[60]   = " "; 
+char Senha_confirm[60]   = " ";
+
+
+	LRESULT CALLBACK WindowProcedure (HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
+		{
+			switch (message)
+					{
+						case WM_CREATE: // Criação da janela
+							DrawComponents(hwnd,message,wParam,lParam); // Draw Components = Desenhe os Componentes
+						break;
+						
+						case WM_COMMAND:   // Interpretação da janela
+							
+							if ((HIWORD(wParam) == BN_CLICKED))
+									
+									{
+											SendMessage(
+															  (HWND)       Login,
+															  (UINT) EM_GETLINE,
+															(WPARAM)          1,
+															(LPARAM) &Login_confirm
+														);
+
+											SendMessage(
+															  (HWND)       Senha,
+															  (UINT)  EM_GETLINE,
+															(WPARAM)           1,
+															(LPARAM)  &Senha_confirm
+														);
+										
+														if(((Login_confirm[0] =='F') && (Login_confirm[1] =='E') && (Login_confirm[2] =='L') && (Login_confirm[3] =='I') && (Login_confirm[4] =='P') && (Login_confirm[5] =='E'))  && (Senha_confirm[0] == ' '))
+															{
+																Cadastro_Pessoa Objeto_Pessoa;
+																Objeto_Pessoa.Menu();
+																PostQuitMessage (0);
+															}
+														else if((Login_confirm == "/0") && (Senha_confirm == "/0"))
+															{
+																MessageBox (NULL, "Preencha o(s) campo(s), por favor.", "Informação", MB_OK);
+															}	
+									}
+						break;
+						
+						case WM_DESTROY:   // Destruição da janela
+							PostQuitMessage (0);
+						break;
+						
+						default:
+						return DefWindowProc (hwnd, message, wParam, lParam);
+					}
+		return 0;
+		}
+//-------------------------------------------------------------------------------------------------
+//*************************************************************************************************		
+//-------------------------------------------------------------------------------------------------		
+		
+
+//*****WinMain, a função main em janelas******
+//---------------------------------------------
+int WINAPI WinMain 
+(
+	HINSTANCE hThisInstance,
+	HINSTANCE hPrevInstance,
+	LPSTR lpszArgument,
+	int nFunsterStil
+)
+
+//----------------------------------------------
+
+
+{
+
+	Cadastro_Pessoa   Objeto_Pessoa;
+		
+//**************************Criando objetos************************************************
+//-----------------------------------------------------------------------------------------
+	HWND hwnd;      	// O objeto para indicar a janela
+	MSG messages;   	// Objeto mensagem do Windows para controlar o acionamento de botões
+	WNDCLASSEX wincl;   // O objeto para criar a janela
+//------------------------------------------------------------------------------------------	
+
+
+//Chamando os objetos e ultilizando seus respectivos metodos, objeto ("wincl")
+//------------------------------------------------------------------------------------------
+	
+	wincl.hInstance = hThisInstance;
+	wincl.lpszClassName = "WindowsAppl"; // Nome da classe da janela
+	wincl.lpfnWndProc = WindowProcedure;
+	wincl.style = CS_DBLCLKS;
+	wincl.cbSize = sizeof (WNDCLASSEX);
+	wincl.hIcon = LoadIcon (NULL, IDI_APPLICATION);
+	wincl.hIconSm = LoadIcon (NULL, IDI_APPLICATION);      // Janela com icone default do Windows
+	wincl.hCursor = LoadCursor (NULL, IDC_ARROW);          //Cursor default
+	wincl.lpszMenuName = NULL;
+	wincl.cbClsExtra = 1;
+	wincl.cbWndExtra = 1;
+	wincl.hbrBackground = (HBRUSH) COLOR_BTNTEXT;       // Cor cinza de background
+//------------------------------------------------------------------------------------------
+	
+
+if (!RegisterClassEx (&wincl))  // Se o registro da classe foi mal-sucedido return 0
+return 0;	
+	
+
+//****Ultilizando o objeto ("hwnd" - criado logo acima) para indicar esta janela que sta sendo criada
+//---------------------------------------------------------------------------------------------------
+	hwnd = CreateWindowEx    				  // Criação da janela 
+	(               
+		0,
+		"WindowsAppl",                        // Indicação da classe da janela
+		"Cadastro - Pessoa",                  // Nome da janela
+		WS_OVERLAPPEDWINDOW,                  // Estilo da janela
+		400,                                  // x em relação ao desktop
+		200,                                  // y em relação ao desktop
+		600,                                  // largura da janela
+		300,                               	  // altura da janela
+		HWND_DESKTOP,
+		NULL,
+		hThisInstance,
+		NULL
+	);
+//--------------------------------------------------------------------------------------------------------
+
+
+//********************Mostra a janela**********************************
+//----------------------------------------------------------------------
+	ShowWindow  // Mostrar a janela 
+	(
+		hwnd, 
+		nFunsterStil
+	);               
+//----------------------------------------------------------------------
+
+
+//********************Recuperar mensagens**********************************
+//-------------------------------------------------------------------------
+	while (GetMessage (&messages, NULL, 0, 0)) 
+		{
+			TranslateMessage (&messages);
+			DispatchMessage  (&messages);
+		}
+//-------------------------------------------------------------------------
+
+
+	return messages.wParam;
+}
